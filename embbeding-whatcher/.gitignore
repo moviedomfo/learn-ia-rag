@@ -1,0 +1,55 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.log
+*.sqlite3
+*.db
+*.pkl
+*.env
+.env*
+.venv/
+venv/
+pip-wheel-metadata/
+
+# IPython/Jupyter
+.ipynb_checkpoints
+
+# mypy / pytest / coverage
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# === Node/TypeScript ===
+node_modules/
+dist/
+build/
+*.log
+.env*
+.nyc_output/
+coverage/
+.vite/
+.cache/
+*.tsbuildinfo
+
+# === VSCode ===
+.vscode/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Docker / CI ===
+*.pid
+*.tar
+docker-compose.override.yml
+
+# === Others ===
+*.bak
+*.swp
+*.tmp
