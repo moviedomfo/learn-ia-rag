@@ -9,5 +9,7 @@ class AppConstants(Enum):
     APP_PATH = os.getenv("APP_FILES_PATH")
     APP_URL  = os.getenv("API_URL")
     API_LOGS_PATH  = os.getenv("API_LOGS_PATH")
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
 
 

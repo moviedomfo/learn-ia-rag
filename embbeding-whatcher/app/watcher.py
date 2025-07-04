@@ -4,6 +4,8 @@ from app.common.app_constants import AppConstants
 from pathlib import Path
 
 from app.common.helpers.DateFunctions import DateFunctions
+from app.common.helpers.FileFunctions import FileFunctions
+from app.common.rag.embedding_generator_openapi import EmbeddingGeneratorOpenApi
 
 
 ARCHIVO_LOG = Path(AppConstants.API_LOGS_PATH.value) / "processed_files.txt"
@@ -21,12 +23,22 @@ def start():
             print(f"🔍 Encontrados {len(archivos_nuevos)} archivo(s) nuevo(s)")
             for archivo in archivos_nuevos:
                 process_files(archivo)
+                # generate_embeddings(archivo)
         else:
-            print("✅ Sin archivos nuevos")
+            print("✅ Sin archivos nuevos..")
 
         time.sleep(10)  # Espera 10 segundos y vuelve a chequear
 
 
+def generate_embeddings(file_name:str):
+    fulFileName= Path(AppConstants.APP_PATH.value) / file_name
+    print(f"🔍 Generando embeddings para {fulFileName}...")
+    gen = EmbeddingGeneratorOpenApi()
+    vector = gen.generate_embeddings(fulFileName)
+    
+    gen.save_embeddings("vector_index", vector)
+
+    set_as_processed(file_name)
 
 
 def process_files(file_name):
@@ -36,10 +48,10 @@ def process_files(file_name):
     print(f"Procesando archivo: {fullName}")
     
     # Por ahora simplemente leemos y mostramos las primeras líneas
-    with open(fullName, "r", encoding="utf-8") as f:
-        lineas = f.readlines()
-        print(f"🔍 {len(lineas)} líneas en el archivo {file_name}")
-        
+    lineas = FileFunctions.open_txt(fullName)
+
+    print(f"🔍 {len(lineas)} líneas en el archivo {file_name}")
+
         # for linea in lineas[:3]:
         #     print(" →", linea.strip())
 
