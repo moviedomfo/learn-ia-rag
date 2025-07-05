@@ -10,9 +10,11 @@ from langchain.llms import OpenAI
 model ="paraphrase-multilingual-MiniLM-L12-v2"
 
 class EmbeddingGeneratorOpenApi:
-    def __init__(self, model=None):
+    def __init__(self, model_name=model):
         # Optionally accept a model for embedding generation
-        self.model = model
+        self.model = model_name
+        self.embedding_model = SentenceTransformerEmbeddings(model_name=model_name)
+
 
     def generate_embeddings(self, fulFileName:str):
    
@@ -33,7 +35,7 @@ class EmbeddingGeneratorOpenApi:
         # Chequear si existe índice anterior
         if os.path.exists(index_path):
             print("📂 Cargando índice existente...")
-            existing_vector = FAISS.load_local(index_path, self.embedding_model)
+            existing_vector = FAISS.load_local(index_path, self.embedding_model,allow_dangerous_deserialization=True)
             existing_vector.merge_from(vectorstore)
             vectorstore = existing_vector
             print("🔗 Índice mergeado con documentos previos.")

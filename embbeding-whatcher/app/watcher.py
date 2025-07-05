@@ -22,8 +22,8 @@ def start():
         if archivos_nuevos:
             print(f"🔍 Encontrados {len(archivos_nuevos)} archivo(s) nuevo(s)")
             for archivo in archivos_nuevos:
-                process_files(archivo)
-                # generate_embeddings(archivo)
+                # process_files(archivo)
+                generate_embeddings(archivo)
         else:
             print("✅ Sin archivos nuevos..")
 
