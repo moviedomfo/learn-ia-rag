@@ -3,10 +3,10 @@ from langchain.document_loaders import TextLoader
 from langchain.embeddings import SentenceTransformerEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
-from langchain.chains import RetrievalQA
-from langchain.llms import OpenAI
+# from langchain.chains import RetrievalQA
+# from langchain.llms import OpenAI
 
-# all-MiniLM-L6-v2
+#model = "all-MiniLM-L6-v2"
 model ="paraphrase-multilingual-MiniLM-L12-v2"
 
 class EmbeddingGeneratorOpenApi:
@@ -32,8 +32,10 @@ class EmbeddingGeneratorOpenApi:
         return vectorstore
     
     def save_embeddings(self, index_path:str, vectorstore):
+        index_file = os.path.join(index_path, "index.faiss")
+
         # Chequear si existe índice anterior
-        if os.path.exists(index_path):
+        if os.path.exists(index_file):
             print("📂 Cargando índice existente...")
             existing_vector = FAISS.load_local(index_path, self.embedding_model,allow_dangerous_deserialization=True)
             existing_vector.merge_from(vectorstore)

@@ -10,6 +10,7 @@ class AppConstants(Enum):
     APP_URL  = os.getenv("API_URL")
     API_LOGS_PATH  = os.getenv("API_LOGS_PATH")
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
+    API_VECTOR_PATHH = os.getenv("API_VECTOR_PATHH")
+    HUGGINGFACEHUB_API_TOKEN  = os.getenv("HUGGINGFACEHUB_API_TOKEN")
 
 

@@ -1,13 +1,16 @@
 
 pip install watchdog
 pip install pendulum
+pip install dotenv
 pip install sentence-transformers
 pip install faiss-cpu
-pip install langchain
+    pip install langchain-community
 pip install langchain openai tiktoken faiss-cpu sentence-transformers
-
+pip install  sentence-transformers
+pip install langchain-huggingface
 pip install --upgrade langchain-huggingface
 
+pip install langchain
 
 🔹 SentenceTransformer (de HuggingFace)
 Es una librería independiente basada en PyTorch que permite convertir texto a embeddings usando modelos como all-MiniLM, paraphrase-mpnet, etc. Ideal para offline 
