@@ -176,3 +176,4 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python
 AlcanceAgentIA.txt
 AlcanceAgentIA2.txt
+embbeding-whatcher/vector_index/index.faiss
