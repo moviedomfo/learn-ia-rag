@@ -15,10 +15,10 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
 
-print("✅ Usando langchain_openai (v0.2.0+)")
+print("✅ Usando langchain_openai (v0.3+)")
 
 EMBEDDING_MODEL = EmbeddingModelsEnum.text_embedding_ada_002.value
-TEMPERATURE = 0.7
+TEMPERATURE = 0 #para test
 OPENAI_MODEL = OpenAPIModelsEnum.gpt_3_5_turbo.value
 
 ARCHIVO_LOG = Path(AppConstants.API_LOGS_PATH.value) / "processed_files.txt"
