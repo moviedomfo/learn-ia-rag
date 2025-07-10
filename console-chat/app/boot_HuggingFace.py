@@ -100,7 +100,7 @@ class LocalVectorChat:
                 try:
                     inputs = {"input": pregunta, "chat_history": self.chat_history}
                     response = self.chain.invoke(inputs)
-                    print(f"🤖 IA: {response}")
+                    print(f"🤖 Walter bot: {response}")
 
                     # Guardamos la conversación
                     self.chat_history.append(HumanMessage(content=pregunta))

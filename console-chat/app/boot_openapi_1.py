@@ -13,6 +13,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 print("✅ Usando langchain_openai (v0.2.0+)")
 
@@ -25,7 +26,7 @@ ARCHIVO_LOG = Path(AppConstants.API_LOGS_PATH.value) / "processed_files.txt"
 chat = ChatOpenAI(model=EMBEDDING_MODEL, temperature=0.7)
 
 # https://chatgpt.com/c/686e721b-00d8-8002-aea9-7461e8cc375c
-class ChatBootOpenApi:
+class ChatBootOpenApi1:
  def __init__(self):
 
         index_path = AppConstants.API_VECTOR_PATHH.value

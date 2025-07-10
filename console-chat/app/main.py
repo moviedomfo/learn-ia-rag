@@ -3,7 +3,7 @@ from app.boot_HuggingFace import  LocalVectorChat
 
 import traceback
 
-from app.boot_openapi import ChatBootOpenApi
+from app.boot_openap_2 import ChatBootOpenApi2
 
 print("Iniciando start...")
 def main():
@@ -11,7 +11,7 @@ def main():
         # start bussiness code
         # start()
         # chat = LocalVectorChat()
-        chat = ChatBootOpenApi()
+        chat = ChatBootOpenApi2()
         chat.run_chat()
     except Exception as e:
         

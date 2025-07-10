@@ -4,7 +4,7 @@ pip install pendulum
 pip install dotenv
 pip install sentence-transformers
 pip install faiss-cpu
-    pip install langchain-community
+pip install langchain-community
 pip install langchain openai tiktoken faiss-cpu sentence-transformers
 pip install  sentence-transformers
 pip install langchain-huggingface
