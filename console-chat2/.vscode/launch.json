@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug main",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app.main", // 👈 clave: usar como módulo
+      "console": "integratedTerminal",
+      "justMyCode": false
+    }
+  ]
+}

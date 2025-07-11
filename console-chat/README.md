@@ -11,7 +11,7 @@ pip install langchain-huggingface
 pip install --upgrade langchain-huggingface
 
 pip install langchain
-
+pip install llama-cpp-python para usar llama
 🔹 SentenceTransformer (de HuggingFace)
 Es una librería independiente basada en PyTorch que permite convertir texto a embeddings usando modelos como all-MiniLM, paraphrase-mpnet, etc. Ideal para offline
 
