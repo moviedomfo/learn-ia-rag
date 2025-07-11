@@ -1,4 +1,4 @@
-http://localhost:8888/tree?
+<http://localhost:8888/tree>?
 
 ```bash
 # Create a new conda environment with Python 3.13.5
@@ -28,8 +28,13 @@ conda env update -f environment.yml
 ```
 
 pip install -r requirements.txt
+pip install --upgrade --quiet  llama-cpp-python
+pip install llama-cpp-python
 
+Install with conda
 
-Install with conda 
-
+```bash
     conda install -c conda-forge pendulum
+    conda install -c conda-forge llama-cpp-python
+    conda install -c conda-forge langchain-community
+```

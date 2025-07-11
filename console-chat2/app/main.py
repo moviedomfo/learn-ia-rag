@@ -1,9 +1,6 @@
 from pathlib import Path
-from app.boot_HuggingFace import  LocalVectorChat
-
 import traceback
 
-from app.boot_openap_2 import ChatBootOpenApi2
 from app.boot_llama import ChatBootLlama
 
 print("Iniciando start...")

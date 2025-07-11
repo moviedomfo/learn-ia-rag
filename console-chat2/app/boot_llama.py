@@ -1,14 +1,19 @@
 import os
 from pathlib import Path
-from langchain.llms import LlamaCpp
-from langchain.embeddings import SentenceTransformerEmbeddings
-from langchain.vectorstores import FAISS
+# from langchain.llms import LlamaCpp
+from langchain_community.llms import ollama
+# from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
+
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-
 from app.common.app_constants import AppConstants, EmbeddingModelsEnum
+# from langchain.embeddings import SentenceTransformerEmbeddings
+from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
 
 EMBEDDING_MODEL = EmbeddingModelsEnum.all_MiniLM_L6_v2.value
 TEMPERATURE = 0 #para test
@@ -39,7 +44,7 @@ class ChatBootLlama:
     base_retriever = self.vectorstore.as_retriever(search_kwargs={"k": 3})
 
     # 4. LLM local con llama-cpp
-    llm = LlamaCpp(
+    llm = ollama(
         model_path=LLAMA_MODEL,
         n_threads=4,
         temperature=0.7
