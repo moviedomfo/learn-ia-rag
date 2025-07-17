@@ -12,12 +12,12 @@
 from pathlib import Path
 import traceback
 
-from app.boot_llama import ChatBootLlama
+from app.boot_llama2 import ChatBootLlama2
 
 print("Iniciando start...")
 def main():
     try:
-        chat:ChatBootLlama = ChatBootLlama()
+        chat:ChatBootLlama2 = ChatBootLlama2()
         chat.run_chat()
     except Exception as e:
         
