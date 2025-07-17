@@ -11,9 +11,10 @@ from langchain.chains.retrieval import create_retrieval_chain
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from app.common.app_constants import AppConstants, EmbeddingModelsEnum
 # from langchain.embeddings import SentenceTransformerEmbeddings
-from langchain_community.embeddings import SentenceTransformerEmbeddings
-from langchain_community.embeddings import HuggingFaceEmbeddings
+# from langchain_community.embeddings import SentenceTransformerEmbeddings
+# from langchain_community.embeddings import HuggingFaceEmbeddings
 
+from langchain_huggingface import HuggingFaceEmbeddings
 
 EMBEDDING_MODEL = EmbeddingModelsEnum.all_MiniLM_L6_v2.value
 TEMPERATURE = 0 #para test
@@ -26,7 +27,7 @@ class ChatBootLlama:
     index_path = AppConstants.API_VECTOR_PATHH.value
 
     # 1. Embeddings local
-    self.embedding_model = SentenceTransformerEmbeddings(model_name=EMBEDDING_MODEL)
+    self.embedding_model = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
 
     # 2. Cargá (o reconstruí) tu FAISS index
     index_file = os.path.join(index_path, "index.faiss")

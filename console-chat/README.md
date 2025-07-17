@@ -2,7 +2,7 @@
 pip install watchdog
 pip install pendulum
 pip install dotenv
-pip install sentence-transformers
+pip install sentence-transffaiormers
 pip install faiss-cpu
 pip install langchain-community
 pip install langchain openai tiktoken faiss-cpu sentence-transformers

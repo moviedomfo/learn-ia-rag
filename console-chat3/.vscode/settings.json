@@ -1,0 +1,14 @@
+{
+  "workbench.colorTheme": "Monokai",
+  "editor.fontFamily": "Fira Code, Consolas, Courier New, monospace",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#005F73",
+    "titleBar.activeForeground": "#E0FBFC",
+    "activityBar.background": "#032d2e",
+    "statusBar.background": "#94D2BD",
+    "statusBar.foreground": "#03202c"
+  },
+  "python.analysis.extraPaths": [
+    "./app"
+  ]
+}

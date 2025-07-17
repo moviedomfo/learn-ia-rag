@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  ollama:
+    build:
+      context: .
+    container_name: ollama-llama3.2
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
+
+  app:
+    build: ./app
+    container_name: app-python
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    command: ["python", "main.py"]

@@ -1,0 +1,7 @@
+name: agent-llama-1
+channels:
+  - defaults
+dependencies:
+  - python=3.13.5
+  - poetry
+prefix: C:\Users\moviedo\AppData\Local\anaconda3\envs\agent-llama-1
