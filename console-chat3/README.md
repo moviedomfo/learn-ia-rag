@@ -62,7 +62,8 @@ Lo demas que se instale lo maneja poetry como gestor de dependencias
 ✅ conda install -c conda-forge sentence-transformers
 ❌ conda install -c conda-forge huggingface-hub
 ✅ poetry add huggingface-hub
- ✅ poetry add langchain-core langchain-ollama
+✅ poetry add langchain-core langchain-ollama
+✅ poetry add langchain-huggingface
 
 📌falta pero con docker llama no hace falta
  poetry add llama-cpp-python

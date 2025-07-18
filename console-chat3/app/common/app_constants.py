@@ -52,3 +52,14 @@ class LlamaModelsEnum(Enum):
          parameter_size: 1.2B
          quantization_level: Q8_0
     """
+
+from enum import Enum
+
+class LogIcon(Enum):
+    OK = "✅"
+    WARN = "⚠️"
+    ERROR = "🛑"
+    INFO = "ℹ️"
+    DEBUG = "🐞"
+    SUCCESS = "🚀"
+    BOOT = "🤖"

@@ -1,31 +1,32 @@
 import os
 from pathlib import Path
-# from langchain_community.llms import ollama
-# from langchain.vectorstores import FAISS
+from app.common.app_constants import LlamaModelsEnum
+from app.common.helpers.LogFunctions import LogFunctions
 from langchain_community.vectorstores import FAISS
-
+from langchain.schema import HumanMessage, AIMessage
+from langchain.schema import BaseMessage, HumanMessage, AIMessage
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-
-from app.common.app_constants import AppConstants, EmbeddingModelsEnum
+from app.common.app_constants import AppConstants, EmbeddingModelsEnum, LogIcon
 from langchain_ollama  import OllamaLLM
-# from langchain_core.language_models.llms import LLM
-from app.common.app_constants import LlamaModelsEnum
-from langchain_community.embeddings import HuggingFaceEmbeddings
+# from langchain_community.embeddings import HuggingFaceEmbeddings #  deprecado
+from langchain_huggingface import HuggingFaceEmbeddings
 
 EMBEDDING_MODEL = EmbeddingModelsEnum.all_MiniLM_L6_v2.value
 TEMPERATURE = 0 #para test
-LLAMA_MODEL = "llama2-7b.gguf"
+LLAMA_MODEL = LlamaModelsEnum.llama3_2_1B_Q4_0.value
 ARCHIVO_LOG = Path(AppConstants.API_LOGS_PATH.value) / "processed_files.txt"
 # https://chatgpt.com/g/g-p-686fad31f90c8191a521997b85127ce3-ia/c/686fc184-9918-8002-8a63-2ea0176f4768
-
+# https://chatgpt.com/c/68795009-e0e8-8002-924a-5065ebc7a7cd
 class ChatBootLlama2:
     def __init__(self):
+        # al inicio
+        self.chat_history: list[BaseMessage] = []
+
         # 1. Embedding model
-        embedding_model_name = EmbeddingModelsEnum.all_MiniLM_L6_v2.value
-        self.embedding_model = HuggingFaceEmbeddings(model_name=embedding_model_name)
+        self.embedding_model = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
 
         # 2. Cargar FAISS index existente
         index_path = AppConstants.API_VECTOR_PATHH.value
@@ -37,16 +38,15 @@ class ChatBootLlama2:
                 self.embedding_model,
                 allow_dangerous_deserialization=True
             )
-            print("✅ Índice FAISS cargado.")
+            LogFunctions.print_OK("Índice FAISS cargado.")
         else:
-            print(f"⚠️ No se encontró el índice en {index_file}.")
+            LogFunctions.print_error(f"No se encontró el índice en {index_file}.")
             self.vectorstore = None
 
         base_retriever = self.vectorstore.as_retriever(search_kwargs={"k": 3})
 
         # 4. LLM local con llama-cpp
-        self.llm:OllamaLLM  = OllamaLLM(model=LlamaModelsEnum.llama3_2_1B_Q4_0.value)
-        print(f"model={LlamaModelsEnum.llama3_2_1B_Q4_0.value}")
+        self.llm:OllamaLLM  = OllamaLLM(model=LLAMA_MODEL,temperature=TEMPERATURE)
         
         # 5. Prompt de reformulación contextual
         contextualize = ChatPromptTemplate.from_messages([
@@ -88,23 +88,27 @@ class ChatBootLlama2:
 
 # 8. Loop interactivo
     def run_chat(self):
-        print("🤖 Chat local iniciado. escribí 'salir' para terminar.")
-        chat_history = []
+        LogFunctions.print_OK(" Chat local iniciado. escribí 'salir' para terminar.")
+      
         while True:
             pregunta = input("👤 Vos: ")
             if pregunta.lower() in ["q", "exit", "quit"]:
-                print("🤖 Chau, éxito con tu proyecto.")
+                print(f"{LogIcon.BOOT} Chau, éxito con tu proyecto.")
                 break
             try:
+                     # dentro del bucle, después de imprimir la respuesta:
+                self.chat_history.append(HumanMessage(content=pregunta))
+                out = self.rag_chain.invoke({
+                    "input": pregunta,
+                    "chat_history": self.chat_history
+                })
+                # respuesta = self.llm.invoke(pregunta)
+                respuesta = out["answer"]
+                print(f"{LogIcon.BOOT} Bot local: {respuesta}")
+                # chat_history.append((pregunta, respuesta))
                 
-                # out = self.llm.invoke({
-                #     "input": pregunta,
-                #     "chat_history": chat_history
-                # })
-                respuesta = self.llm.invoke(pregunta)
-                # respuesta = out["answer"]
-                print(f"🤖 Bot local: {respuesta}")
-                chat_history.append((pregunta, respuesta))
+                self.chat_history.append(AIMessage(content=respuesta))
+        
             except Exception as e:
-                print(f"⚠️ Error: {e}")
+                LogFunctions.print_error(f"Error: {e}")
 
