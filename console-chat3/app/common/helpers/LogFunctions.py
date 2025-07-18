@@ -5,7 +5,9 @@ import pendulum
 
 class LogFunctions:
   
-
+    staticmethod
+    def print_BOOT(text: str) -> None:
+        print(f"{LogIcon.BOOT.value} {text}")
     @staticmethod
     def print_OK(text: str) -> None:
         LogFunctions._log(LogIcon.OK, text)

@@ -3,15 +3,13 @@ from langchain.document_loaders import TextLoader
 from langchain.embeddings import SentenceTransformerEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
-# from langchain.chains import RetrievalQA
-# from langchain.llms import OpenAI
+
 
 #model = "all-MiniLM-L6-v2"
 model ="paraphrase-multilingual-MiniLM-L12-v2"
 
 class EmbeddingGeneratorOpenApi:
     def __init__(self, model_name=model):
-        # Optionally accept a model for embedding generation
         self.model = model_name
         self.embedding_model = SentenceTransformerEmbeddings(model_name=model_name)
 

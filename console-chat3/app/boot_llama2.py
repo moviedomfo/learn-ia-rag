@@ -1,3 +1,6 @@
+# https://chatgpt.com/g/g-p-686fad31f90c8191a521997b85127ce3-ia/c/686fc184-9918-8002-8a63-2ea0176f4768
+# https://chatgpt.com/c/68795009-e0e8-8002-924a-5065ebc7a7cd
+
 import os
 from pathlib import Path
 from app.common.app_constants import LlamaModelsEnum
@@ -16,10 +19,10 @@ from langchain_huggingface import HuggingFaceEmbeddings
 
 EMBEDDING_MODEL = EmbeddingModelsEnum.all_MiniLM_L6_v2.value
 TEMPERATURE = 0 #para test
-LLAMA_MODEL = LlamaModelsEnum.llama3_2_1B_Q4_0.value
+LLAMA_MODEL = LlamaModelsEnum.llama3.value
 ARCHIVO_LOG = Path(AppConstants.API_LOGS_PATH.value) / "processed_files.txt"
-# https://chatgpt.com/g/g-p-686fad31f90c8191a521997b85127ce3-ia/c/686fc184-9918-8002-8a63-2ea0176f4768
-# https://chatgpt.com/c/68795009-e0e8-8002-924a-5065ebc7a7cd
+
+socio_id=1097
 class ChatBootLlama2:
     def __init__(self):
         # al inicio
@@ -43,16 +46,24 @@ class ChatBootLlama2:
             LogFunctions.print_error(f"No se encontró el índice en {index_file}.")
             self.vectorstore = None
 
-        base_retriever = self.vectorstore.as_retriever(search_kwargs={"k": 3})
-
+        # base_retriever = self.vectorstore.as_retriever(search_kwargs={"k": 3})
+        base_retriever = self.vectorstore.as_retriever(
+            search_kwargs={"k": 3, "filter": {"SOCIO_NRO": socio_id}}
+            )
         # 4. LLM local con llama-cpp
         self.llm:OllamaLLM  = OllamaLLM(model=LLAMA_MODEL,temperature=TEMPERATURE)
         
         # 5. Prompt de reformulación contextual
         contextualize = ChatPromptTemplate.from_messages([
             ("system",
+             "Eres un asistente de la Cooperativa. "
              "Dado este historial de conversación y una nueva pregunta, reformulá la pregunta para que sea autocontenida:\n"
-             "{chat_history}\n\n"
+             "Reglas:\n- Un socio puede tener uno o más abonados.\n"
+              "Si la pregunta sobre facturas es ambigua, pregunta si quiere el total "
+              "de todos los abonados o uno específico.\n\n"
+              "- Cada abonado emite una factura por período.\n\n"
+              "- si ya tiene ubicado el cosio puedes saludorlo por su nombre.\n\n"
+              "{chat_history}\n\n"
              "Nueva pregunta: {input}"),
             MessagesPlaceholder(variable_name="chat_history"),
             ("human", "{input}")
@@ -69,8 +80,13 @@ class ChatBootLlama2:
         qa_prompt = ChatPromptTemplate.from_messages([
             ("system",
              "Usá el siguiente contexto para responder. Si no sabés, decí que no lo sabés.\n\n"
+             "Reglas:\n- Un socio puede tener uno o más abonados.\n"
+              "Si la pregunta sobre facturas es ambigua, pregunta si quiere el total "
+              "de todos los abonados o uno específico.\n\n"
+              "- Cada abonado emite una factura por período.\n\n"
+              "- si ya tiene ubicado el cosio puedes saludorlo por su nombre.\n\n"
              "Contexto:\n{context}"),
-            ("user", "{input}")
+            ("human", "{input}")
         ])
 
         # 8. Stuff chain
@@ -93,7 +109,7 @@ class ChatBootLlama2:
         while True:
             pregunta = input("👤 Vos: ")
             if pregunta.lower() in ["q", "exit", "quit"]:
-                print(f"{LogIcon.BOOT} Chau, éxito con tu proyecto.")
+                LogFunctions.print_BOOT("Chau, éxito con tu proyecto.")
                 break
             try:
                      # dentro del bucle, después de imprimir la respuesta:
@@ -104,7 +120,7 @@ class ChatBootLlama2:
                 })
                 # respuesta = self.llm.invoke(pregunta)
                 respuesta = out["answer"]
-                print(f"{LogIcon.BOOT} Bot local: {respuesta}")
+                LogFunctions.print_BOOT({respuesta})
                 # chat_history.append((pregunta, respuesta))
                 
                 self.chat_history.append(AIMessage(content=respuesta))
