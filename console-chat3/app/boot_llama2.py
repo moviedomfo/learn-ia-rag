@@ -17,12 +17,15 @@ from langchain_ollama  import OllamaLLM
 # from langchain_community.embeddings import HuggingFaceEmbeddings #  deprecado
 from langchain_huggingface import HuggingFaceEmbeddings
 
+from common import SessionState
+
+CHAT_CEL_NUMBER = '351-153398747'
 EMBEDDING_MODEL = EmbeddingModelsEnum.all_MiniLM_L6_v2.value
 TEMPERATURE = 0 #para test
 LLAMA_MODEL = LlamaModelsEnum.llama3.value
 ARCHIVO_LOG = Path(AppConstants.API_LOGS_PATH.value) / "processed_files.txt"
 
-socio_id=1097
+
 class ChatBootLlama2:
     def __init__(self):
         # al inicio
@@ -105,7 +108,8 @@ class ChatBootLlama2:
 # 8. Loop interactivo
     def run_chat(self):
         LogFunctions.print_OK(" Chat local iniciado. escribí 'salir' para terminar.")
-      
+        SessionState.load_users()
+        state    = SessionState(CHAT_CEL_NUMBER)
         while True:
             pregunta = input("👤 Vos: ")
             if pregunta.lower() in ["q", "exit", "quit"]:

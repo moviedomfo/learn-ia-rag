@@ -8,6 +8,13 @@
       "module": "app.main",
       "console": "integratedTerminal",
       "justMyCode": false
+    },  {
+      "name": "check state",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app.chk_SessionState",
+      "console": "integratedTerminal",
+      "justMyCode": false
     }
   ]
 }

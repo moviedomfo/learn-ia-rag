@@ -28,7 +28,7 @@ class ChatBootLlama:
         print(f"model={LlamaModelsEnum.llama3_2_1B_Q4_0.value}")
 
 # 8. Loop interactivo
-    def run_chat(self):
+    def run_chat(self): 
         print("🤖 Chat local iniciado. escribí 'salir' para terminar.")
         chat_history = []
         while True:

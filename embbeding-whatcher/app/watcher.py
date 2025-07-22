@@ -5,16 +5,17 @@ from pathlib import Path
 
 from app.common.helpers.DateFunctions import DateFunctions
 from app.common.helpers.FileFunctions import FileFunctions
-from app.common.rag.embedding_generator_openapi import EmbeddingGeneratorOpenApi
+from app.common.rag.embedding_generator_CsvLoader import EmbeddingGeneratorCSVLoader
 
 
-ARCHIVO_LOG = Path(AppConstants.API_LOGS_PATH.value) / "processed_files.txt"
-
+APP_LOG_FILE = Path(AppConstants.API_LOGS_PATH.value) / "processed_files.txt"
+APP_FILES_PATH = Path(AppConstants.APP_PATH.value) / "files"
+APP_INDEX_PATH= Path(AppConstants.APP_PATH.value) / "vector_index"
 def start():
     print("Iniciando watcher...")
 
     while True:
-        archivos_en_carpeta = [f for f in os.listdir( AppConstants.APP_PATH.value) if f.endswith(".txt")]
+        archivos_en_carpeta = [f for f in os.listdir( APP_FILES_PATH) if f.endswith(".txt")]
         archivos_procesados = get_processed_files()
 
         archivos_nuevos = [f for f in archivos_en_carpeta if f not in archivos_procesados]
@@ -31,12 +32,12 @@ def start():
 
 
 def generate_embeddings(file_name:str):
-    fulFileName= Path(AppConstants.APP_PATH.value) / file_name
+    fulFileName= Path(APP_FILES_PATH) / file_name
     print(f"🔍 Generando embeddings para {fulFileName}...")
-    gen = EmbeddingGeneratorOpenApi()
+    gen = EmbeddingGeneratorCSVLoader()
     vector = gen.generate_embeddings(fulFileName)
     
-    gen.save_embeddings("vector_index", vector)
+    gen.save_embeddings(APP_INDEX_PATH, vector)
 
     set_as_processed(file_name)
 
@@ -44,7 +45,7 @@ def generate_embeddings(file_name:str):
 def process_files(file_name):
     """Acá va lo que quieras hacer con cada archivo nuevo."""
     # path = os.path.join(AppConstants.APP_PATH.value, file_name)
-    fullName= Path(AppConstants.APP_PATH.value) / file_name
+    fullName= Path(APP_FILES_PATH) / file_name
     print(f"Procesando archivo: {fullName}")
     
     # Por ahora simplemente leemos y mostramos las primeras líneas
@@ -63,21 +64,21 @@ def set_as_processed(file_name):
     # date = time.strftime("%Y-%m-%d %H:%M:%S")
     # message = f"{date} {file_name}"
     message = DateFunctions.get_dd_mm_yy(file_name)
-    with open(ARCHIVO_LOG, "a", encoding="utf-8") as f:
+    with open(APP_LOG_FILE, "a", encoding="utf-8") as f:
         f.write(message + "\n")
 
 
     
 def get_processed_files() -> set[str]:
     """Lee el archivo de log y devuelve un set con los nombres procesados."""
-    if not os.path.exists(AppConstants.API_LOGS_PATH.value):
-        os.makedirs(AppConstants.API_LOGS_PATH.value, exist_ok=True)
+    if not os.path.exists(APP_FILES_PATH):
+        os.makedirs(APP_FILES_PATH, exist_ok=True)
     
-    if not os.path.exists(ARCHIVO_LOG):
-        with open(ARCHIVO_LOG, "w", encoding="utf-8") as f:
+    if not os.path.exists(APP_LOG_FILE):
+        with open(APP_LOG_FILE, "w", encoding="utf-8") as f:
             pass  # Crea un archivo vacío
 
-    with open(ARCHIVO_LOG, "r", encoding="utf-8") as f:
+    with open(APP_LOG_FILE, "r", encoding="utf-8") as f:
         return set(
              linea.strip().split()[-1] 
              for linea in f.readlines()

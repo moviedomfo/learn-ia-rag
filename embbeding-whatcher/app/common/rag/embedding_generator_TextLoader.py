@@ -1,6 +1,6 @@
 import os
 from langchain.document_loaders import TextLoader
-from langchain.embeddings import SentenceTransformerEmbeddings
+from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 
@@ -8,7 +8,7 @@ from langchain.vectorstores import FAISS
 #model = "all-MiniLM-L6-v2"
 model ="paraphrase-multilingual-MiniLM-L12-v2"
 
-class EmbeddingGeneratorOpenApi:
+class EmbeddingGeneratorTextLoader:
     def __init__(self, model_name=model):
         self.model = model_name
         self.embedding_model = SentenceTransformerEmbeddings(model_name=model_name)
@@ -24,8 +24,8 @@ class EmbeddingGeneratorOpenApi:
         chunks = splitter.split_documents(docs)
 
         # 4. Crear embeddings con SentenceTransformers
-        embedding_model = SentenceTransformerEmbeddings(model_name=model)
-        vectorstore = FAISS.from_documents(chunks, embedding_model)
+        # self.embedding_model = SentenceTransformerEmbeddings(model_name=model)
+        vectorstore = FAISS.from_documents(chunks, self.embedding_model)
 
         return vectorstore
     
