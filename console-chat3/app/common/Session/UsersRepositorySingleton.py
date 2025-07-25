@@ -18,14 +18,22 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Repositorio de usuarios
-class UsersRepository:
-    _data: Dict[str, SocioBE] = {}
+class UsersRepositorySingleton:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(UsersRepositorySingleton, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
    
     def __init__(self):
+        if self._initialized:
+            return
         self._data: Dict[str, SocioBE] = {}
         self._lock = Lock()
         self._load()
-
+        self._initialized = True
    
     def _load(self) -> None:
         # if self._data is None:            # ⇢ primera vez

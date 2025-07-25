@@ -16,15 +16,15 @@ from app.common.app_constants import AppConstants, EmbeddingModelsEnum, LogIcon
 from langchain_ollama  import OllamaLLM
 # from langchain_community.embeddings import HuggingFaceEmbeddings #  deprecado
 from langchain_huggingface import HuggingFaceEmbeddings
+from app.common.Session.SessionState import SessionState
 
-from common import SessionState
 
-CHAT_CEL_NUMBER = '351-153398747'
+CHAT_CEL_NUMBER = '351-153398748'
 EMBEDDING_MODEL = EmbeddingModelsEnum.all_MiniLM_L6_v2.value
 TEMPERATURE = 0 #para test
 LLAMA_MODEL = LlamaModelsEnum.llama3.value
 ARCHIVO_LOG = Path(AppConstants.API_LOGS_PATH.value) / "processed_files.txt"
-
+asistente= "casandra"
 
 class ChatBootLlama2:
     def __init__(self):
@@ -49,10 +49,10 @@ class ChatBootLlama2:
             LogFunctions.print_error(f"No se encontró el índice en {index_file}.")
             self.vectorstore = None
 
-        # base_retriever = self.vectorstore.as_retriever(search_kwargs={"k": 3})
-        base_retriever = self.vectorstore.as_retriever(
-            search_kwargs={"k": 3, "filter": {"SOCIO_NRO": socio_id}}
-            )
+        base_retriever = self.vectorstore.as_retriever(search_kwargs={"k": 3})
+        # base_retriever = self.vectorstore.as_retriever(
+        #     search_kwargs={"k": 3, "filter": {"SOCIO_NRO": self.socio_id}}
+        #     )
         # 4. LLM local con llama-cpp
         self.llm:OllamaLLM  = OllamaLLM(model=LLAMA_MODEL,temperature=TEMPERATURE)
         
@@ -103,32 +103,53 @@ class ChatBootLlama2:
             history_retriever,
             stuff_chain
         )
-
-
+  
 # 8. Loop interactivo
     def run_chat(self):
         LogFunctions.print_OK(" Chat local iniciado. escribí 'salir' para terminar.")
-        SessionState.load_users()
-        state    = SessionState(CHAT_CEL_NUMBER)
+        state = SessionState(CHAT_CEL_NUMBER)
+        s = state.has_socio(CHAT_CEL_NUMBER)
+
+        # Si no hay datos del socio, pedirlos y persistirlos
+        if s.nro_abonado is None:   
+            LogFunctions.print_error("No se encontró el socio asociado al número de teléfono.")
+            nro_socio = input("Ingresa el Nro de socio: ")
+            state.socio.nro_socio = nro_socio
+            nro_abonado = input("Ingresa el Nro de abonado: ")
+            state.socio.nro_abonado = nro_abonado
+            state.socio.nombre = input("Ingresa el nombre del socio: ")
+            state.persist_socio()
+            # Actualizar s después de guardar
+            s = state.has_socio(CHAT_CEL_NUMBER)
+
+        # Agregar información relevante del socio al chat_history como contexto inicial
+        socio_context = (
+            f"Datos del socio:\n"
+            f"- Nombre: {s.nombre}\n"
+            f"- Nro de socio: {s.nro_socio}\n"
+            f"- Nro de abonado: {s.nro_abonado}\n"
+        )
+        self.chat_history = [
+            HumanMessage(content="Estos son mis datos personales para futuras consultas."),
+            AIMessage(content=socio_context)
+        ]
+
+        LogFunctions.print_BOOT(f"Hola soy {asistente} {s.nombre}, ¿en qué puedo ayudarte hoy?")
+
         while True:
-            pregunta = input("👤 Vos: ")
-            if pregunta.lower() in ["q", "exit", "quit"]:
+            pregunta = input(f"👤{s.nombre}: ")
+            if pregunta.lower() in ["q", "exit", "quit", "salir"]:
                 LogFunctions.print_BOOT("Chau, éxito con tu proyecto.")
                 break
             try:
-                     # dentro del bucle, después de imprimir la respuesta:
                 self.chat_history.append(HumanMessage(content=pregunta))
                 out = self.rag_chain.invoke({
                     "input": pregunta,
                     "chat_history": self.chat_history
                 })
-                # respuesta = self.llm.invoke(pregunta)
                 respuesta = out["answer"]
                 LogFunctions.print_BOOT({respuesta})
-                # chat_history.append((pregunta, respuesta))
-                
                 self.chat_history.append(AIMessage(content=respuesta))
-        
             except Exception as e:
                 LogFunctions.print_error(f"Error: {e}")
 
